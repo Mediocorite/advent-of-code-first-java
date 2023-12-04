@@ -106,21 +106,58 @@ public class OneCalibrationValue {
 	}
 
 
-//	private static int Decipher(String artwork) {
-//		// Loop through the values of numbers. Create map;
-//
-//		// Earliest known value;
-//		// Latest known value;
-//
-//		Map<String, List<Integer>> foundWords = new HashMap<>();
-//		for (int i = 0; i < 9; i++) {
-//
-//		}
-//		Map<Integer, List<Integer>> foundNumbers = new HashMap<>();
-//	}
+	private static int ReplaceAndFind(String s) {
+		Map<String, String> numStrings = new HashMap<>();
+		numStrings.put("one", "1");
+		numStrings.put("two", "2");
+		numStrings.put("three", "3");
+		numStrings.put("four", "4");
+		numStrings.put("five", "5");
+		numStrings.put("six", "6");
+		numStrings.put("seven", "7");
+		numStrings.put("eight", "8");
+		numStrings.put("nine", "9");
+
+		int index = Integer.MAX_VALUE;
+		while (index == Integer.MAX_VALUE) {
+			String first = "";
+			for (Map.Entry<String, String> entry : numStrings.entrySet()) {
+				int pos = s.indexOf(entry.getKey());
+				if (pos != -1 && pos < index) {
+					index = s.indexOf(entry.getKey());
+					first = entry.getKey();
+				}
+			}
+			index = -1;
+			if (numStrings.containsKey(first)) {
+				s = s.replace(first.substring(0, first.length() - 1), numStrings.get(first));
+				index = Integer.MAX_VALUE;
+			}
+		}
+
+		int flag = 0;
+		int num = 0;
+		char currChar = '\0';
+
+		for (int i = 0; i < s.length(); i++) {
+			if (Character.isDigit(s.charAt(i))) {
+				currChar = s.charAt(i);
+				if (flag == 0) {
+					num += 10 * (currChar - '0');
+					flag++;
+				}
+			}
+		}
+
+		num += (currChar - '0');
+		// System.out.println(num);
+		return num;
+
+	}
 
 	public static void main(String[] args) {
 		int sum = 0;
+		int sum2 = 0;
 		try {
 			File myObj = new File("CalibrationTestCase.txt");
 			Scanner myReader = new Scanner(myObj);
@@ -128,8 +165,10 @@ public class OneCalibrationValue {
 				String data = myReader.nextLine();
 				System.out.println("This is the current line: " + data);
 				sum += DecipherWithWords(data);
+				sum2 += ReplaceAndFind(data);
 			}
-			System.out.println("This is the answer ->" + sum);
+			System.out.println("This is the answer -> " + sum);
+			System.out.println("This is the second ans -> "+sum2);
 			myReader.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");

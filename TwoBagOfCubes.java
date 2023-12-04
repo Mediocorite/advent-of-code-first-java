@@ -35,21 +35,25 @@ public class TwoBagOfCubes {
 		int blue = 14;
 
 		if ( red < data[1] ) {
-			System.out.println("The game id: " + data[0] + " is invalid because the red balls are: " + data[1]);
+//			System.out.println("The game id: " + data[0] + " is invalid because the red balls are: " + data[1]);
 			return 0;
 		}
 
 		if ( green < data[3]) {
-			System.out.println("The game id: " + data[0] + " is invalid because the green balls are: " + data[3] );
+//			System.out.println("The game id: " + data[0] + " is invalid because the green balls are: " + data[3] );
 			return 0;
 		}
 
 		if (blue < data[2]) {
-			System.out.println("The game id: " + data[0] + " is invalid because the blue balls are: " + data[2]);
+//			System.out.println("The game id: " + data[0] + " is invalid because the blue balls are: " + data[2]);
 			return 0;
 		}
 
 		return data[0];
+	}
+
+	public static int PowerOfCubes(int[] data) {
+		return data[1] * data[2] * data[3];
 	}
 
 	public static void main(String[] args) {
@@ -58,13 +62,16 @@ public class TwoBagOfCubes {
 			File myObj = new File("BagOfCubes.txt");
 			Scanner myReader = new Scanner(myObj);
 			int sum = 0;
+			int sum2 = 0;
 			while (myReader.hasNextLine()) {
 				String data = myReader.nextLine();
 				int[] values = ExtractInfoLine(data);
 				sum += VerifyGame(values);
+				sum2 += PowerOfCubes(values);
 			}
 			System.out.println("Answer ->" + sum);
 			myReader.close();
+			System.out.println("Answer for part two ->" + sum2);
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();

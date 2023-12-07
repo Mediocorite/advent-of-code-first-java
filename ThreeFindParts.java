@@ -5,79 +5,84 @@ import java.util.*;
 public class ThreeFindParts {
 
 	private int sum = 0;
-	private class Pair {
-		private char character;
-		private int number;
+	// Linked List to store and view part of the file
+	private LinkedList<String> buffer = new LinkedList<>();
+	// For Checking all 8 directions for a valid symbol
+	int[][] coordinates = new int[][] {
+		// Top : buffer.get(1).charAt(i);
+		{ 1, 0 },
+		// Bottom : buffer.get(3).charAt(i);
+		{ 3, 0 },
+		// Left : buffer.get(2).charAt(i - 1);
+		{ 2, -1 },
+		// Right : buffer.get(2).charAt(i + 1);
+		{ 2, 1 },
+		// TopLeft : buffer.get(1).charAt(i - 1);
+		{ 1, -1 },
+		// TopRight : buffer.get(1).charAt(i + 1);
+		{ 1, 1 },
+		// BottomLeft : buffer.get(3).charAt(i - 1);
+		{ 3, -1 },
+		// BottomRight : buffer.get(3).charAt(i + 1);
+		{ 3, 1 }
+	};
 
-		public Pair(char character, int number) {
-			this.character = character;
-			this.number = number;
-		}
-
-		public char getCharacter() {
-			return character;
-		}
-
-		public int getNumber() {
-			return number;
-		}
-	}
-
-
-	public static Map<Integer, int[]> extractNumbers(String currLine) {
-		Map<Integer, int[]> foundParts = new HashMap<>();
-		StringBuilder currentNumber = new StringBuilder();
-		int startIndex = -1;
-		for (int i = 0; i < currLine.length(); i++) {
-			char curr = currLine.charAt(i);
-
-			if (Character.isDigit(curr)) {
-				if (startIndex == -1) {
-					startIndex = i;
-				}
-			} else if (currentNumber.length() > 0) {
-				int[] indices = new int[currentNumber.length()];
-				for (int j = 0; j < currentNumber.length(); j ++) {
-					indices[j] = startIndex + j;
-				}
-				int foundNumber = Integer.parseInt(currentNumber.toString());
-				foundParts.put(foundNumber, indices);
-			}
-
-		}
-		return foundParts;
-	}
-
-	public static Map<Integer, Character> extractSymbols (String currLine) {
-		Map<Integer, Character> foundSymbols = new HashMap<>();
-		for (int i = 0; i < currLine.length(); i++) {
-			char curr = currLine.charAt(i);
-			if (!Character.isLetterOrDigit(curr)) {
-				foundSymbols.put(i, curr);
+	// Searches all directions for a symbol
+	public static Boolean CheckValidParts(String number, int index) {
+		int currentLenght = number.length() + index;
+		for (int i = index; i < currentLenght; i++){
+			for ( int[] currCord: coordinates) {
+				char c = buffer.get(currCord[0]).charAt(i + currCord[1])
+				if (!Character.isDigit() && c != '.') return true;
 			}
 		}
-		return foundSymbols;
+		return false;
 	}
 
-	public static void ScanningPartsList(LinkedList<String> threeLines) {
-		Iterator<String> iterator = threeLines.iterator();
-		while (iterator.hasNext()) {
-			String currentValue = iterator.next();
-			Map<Integer, int[]> foundNumbers = extractNumbers(currentValue);
-			Map<Integer, Character> foundSymbols = extractSymbols(currentValue);
+	// Checks if middle line has valid parts in it
+	public static int SumOfValidPartsAtPointer (buffer) {
+		if (buffer.size() != 3) {
+			throw new IllegalStateException("Algorithm is checked at the wrong point");
 		}
+
+		Pattern pattern = Pattern.compile("\\d+");
+		Matcher matcher = pattern.matcher(buffer.get(1));
+
+		while(matcher.find()) {			
+            String number = matcher.group(); // Get the matched number
+            int index = matcher.start();    // Get the start index of the match
+			Boolean foundValid = CheckValidParts(number, index);
+
+			if (foundValid) {
+				sum += Integer.parseInt(number);
+			}
+		}
+
 	}
+
+	public static void SumOfBuffer() {
+		// Edge cases -> When file starts and ends
+		// Check second line of the linked list and run algorithm on it
+		List<Integer> validParts = new List<>();
+		// Edge cases 1 - For first line
+		if (buffer.size() == 2) {
+			CheckPartsAtTheStart();
+		} else {
+			SumOfValidPartsAtPointer();
+		}
+
+	}
+
 
 	public static void main(String[] args) {
 		try {
 			File myFile = new File("PartsInformation.txt");
 			Scanner myScan = new Scanner(myFile);
-			LinkedList<String> threeLineBuffer = new LinkedList<>();
 			while (myScan.hasNextLine()){
 				String line = myScan.nextLine();
-				threeLineBuffer.add(line);
-				if(threeLineBuffer.size() > 3) {
-					threeLineBuffer.remove();
+				buffer.add(line);
+				if(buffer.size() > 3) {
+					buffer.remove();
 				}
 			}
 			myScan.close();
